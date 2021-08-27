@@ -4,7 +4,7 @@ contract Migrations {
   address public owner;
   uint public last_completed_migration;
 
-  modifier public restricted() {
+  modifier restricted() {
     if (msg.sender == owner) _;
   }
 
