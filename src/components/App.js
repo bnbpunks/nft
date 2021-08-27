@@ -3,8 +3,7 @@ import { HashRouter, Route } from "react-router-dom";
 import "./App.css";
 import Web3 from "web3";
 
-import CryptoPunks from "../abis/CryptoPunks.json";
-import CryptoPunksMarket from "../abis/CryptoPunksMarket.json";
+import BNBPunks from "../abis/BNBPunks.json";
 
 import AllCryptoBoys from "./AllCryptoBoys/AllCryptoBoys";
 import FormAndPreview from "../components/FormAndPreview/FormAndPreview";
@@ -30,7 +29,7 @@ class App extends Component {
       accountBalance: "",
       selectedpunkid: "",
       punksforsalebuttonhtml: "Load Punks",
-      cryptoBoysContract: null,
+      bnbpunksContract: null,
       cryptoBoysMarketContract: null,
       cryptoBoysCount: 0,
       cryptoPunksLoadCount: 0,
@@ -116,60 +115,22 @@ class App extends Component {
         this.setState({ accountBalance });
         this.setState({ loading: false });
         const networkId = await web3.eth.net.getId();
-        const networkData = CryptoPunks.networks[networkId];
+        const networkData = BNBPunks.networks[networkId];
         if (networkData) {
           this.setState({ loading: true });
-          const cryptoBoysContract = web3.eth.Contract(
-            CryptoPunks.abi,
-            networkData.address
-          );
-  	const cryptoBoysMarketContract = web3.eth.Contract(
-            CryptoPunksMarket.abi,
+          const bnbpunksContract = web3.eth.Contract(
+            BNBPunks.abi,
             networkData.address
           );
 
-          this.setState({ cryptoBoysContract });
-          this.setState({ cryptoBoysMarketContract });
+          this.setState({ bnbpunksContract });
   	      this.setState({ contractDetected: true });
 
           const totalTokensOwnedByAccount2 = await cryptoBoysContract.methods
             .punksRemainingToAssign()
             .call();
 
-          const balanceOf = await cryptoBoysContract.methods
-            .balanceOf(this.state.accountAddress)
-            .call();
 
-          let punkOwners = [];
-          this.state.cryptoBoys = punkOwners;
-          this.state.cryptoBoysForSale = [];
-          this.state.balanceOf  = balanceOf + "";
-          this.state.totalTokensOwnedByAccount  = totalTokensOwnedByAccount2 + "";
-          this.state.punksforsalebuttonhtml = "Load Punks";
-          this.setState({totalTokensOwnedByAccount:this.state.totalTokensOwnedByAccount});
-          this.setState({balanceOf:this.state.balanceOf});
-          this.setState({cryptoBoys:this.state.cryptoBoys});
-          this.setState({cryptoBoysForSale:this.state.cryptoBoysForSale});
-          this.setState({punksforsalebuttonhtml:this.state.punksforsalebuttonhtml});
-          this.setState({currentPage:this.state.currentPage});
-
-
-          for (let i = 0; i < 10000; i++) {
-              this.state.cryptoBoysForSale[i]=0x00;
-          }
-          for (let i = 0; i < 200; i++) {
-            (async () => {
-                await this.loadPunksForSale(i*50,(i*50)+50);
-            })();
-          }
-          for (let i = 0; i < 10000; i++) {
-              this.state.cryptoBoys[i]=0x00;
-          }
-          for (let i = 0; i < 200; i++) {
-            (async () => {
-                await this.loadMorePunks(i*50,(i*50)+50);
-            })();
-          }
 
   	       this.setState({ loading: false });
         } else {
