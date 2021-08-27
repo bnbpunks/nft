@@ -8,7 +8,7 @@ contract Migrations {
     if (msg.sender == owner) _;
   }
 
-  function public Migrations() {
+  function Migrations() {
     owner = msg.sender;
   }
 
